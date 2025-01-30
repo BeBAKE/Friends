@@ -14,7 +14,7 @@ const port: number | string = process.env.port || 5500
 app.use(express.json())
 app.use(cors())
 
-app.use('/api/v1/', indexRouter)
+app.use('/api/v1', indexRouter)
 
 
 const server = async()=>{
@@ -28,20 +28,3 @@ const server = async()=>{
 
 server()
 
-// const server = app.listen(port, () => {
-//   console.log(`server started on port : ${port}`);
-// })
-// enum signals {
-//   SIGINT = 'SIGINT',
-//   SIGTERM = 'SIGTERM'
-// }
-// const cleanShutdown = (signal: signals) => {
-//   console.log(`${signal} Singal recieved`)
-//   server.close(() => {
-//     console.log('server closed')
-//     // pool.end()
-//     process.exit(0)
-//   })
-// }
-// process.on('SIGINT', () => cleanShutdown(signals.SIGINT))
-// process.on('SIGTERM', () => cleanShutdown(signals.SIGTERM))

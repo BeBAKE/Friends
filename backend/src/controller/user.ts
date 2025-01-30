@@ -7,7 +7,7 @@ import { UserCredentials } from '../types';
 interface UserResponse {
   success: boolean,
   message: string,
-  data?: Record<string,string>;
+  data?: Record<string,string|IUser>;
   user?: IUser;
 }
 interface ErrorResponse {
@@ -26,7 +26,7 @@ const signup = async (req: Request<{}, {}, UserCredentials>, res: Response<UserR
     await user.save();
     
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET!);
-    const data = { token : token }
+    const data = { token : token, user : user }
 
     res.status(200).json({success: true, message: "User signed up", data})
   } catch (error) {
@@ -47,7 +47,7 @@ const login = async (req: Request<{}, {}, UserCredentials>, res: Response<UserRe
     }
     
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET!);
-    const data = { token : token }
+    const data = { token : token, user : user }
 
     res.status(200).json({success: true, message: "User logged in",data})
   } catch (error) {
