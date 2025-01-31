@@ -6,10 +6,10 @@ import FormButton from "../../components/UI/FormButton"
 import { toast } from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css'
 import { motion } from "framer-motion"
-import { useNavigate } from "react-router-dom"//! delete
+import { useNavigate } from "react-router-dom"
 
 const Login = () => {
-  const nav = useNavigate()//! delete
+  const nav = useNavigate()
   const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
@@ -28,7 +28,10 @@ const Login = () => {
     setIsFirstRequest(false);
     
     toast.promise(
-      login(formData).then(() => setIsFirstRequest(true)),
+      login(formData).then(() => {
+        setIsFirstRequest(true)
+        nav("/")
+      }),
       {
         pending: 'Signing in...',
         success: 'Logged in successfully!',
@@ -93,7 +96,6 @@ const Login = () => {
             onClick={submit} 
             isFirstRequest={isFirstRequest}
           />
-          <button onClick={()=>nav("/")}>Here</button>//! delete
         </div>
 
       </motion.div>

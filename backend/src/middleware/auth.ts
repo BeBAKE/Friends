@@ -28,3 +28,19 @@ export const auth = async (req: IRequest, res: Response, next: NextFunction) => 
     res.status(401).json({ success:false, message: 'Please authenticate' });
   }
 };
+
+export const checkAuth = async (req: IRequest, res: Response) => {
+  try {
+    if (!req.user) {
+      res.status(401).json({ message: 'Not authenticated' });
+      return 
+    }
+
+    res.status(200).json({
+      user: req.user
+    });
+  } catch (error) {
+    console.error('Check auth error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};

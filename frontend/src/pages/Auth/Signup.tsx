@@ -4,10 +4,12 @@ import FormButton from "../../components/UI/FormButton";
 import { useAuth } from "../../context/AuthContext";
 import { useState, useCallback } from "react";
 import { toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
+
 const Signup = () => {
+  const nav = useNavigate()
   const { signup } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
@@ -27,7 +29,10 @@ const Signup = () => {
     setIsFirstRequest(false);
     
     toast.promise(
-      signup(formData).then(() => setIsFirstRequest(true)),
+      signup(formData).then(() => {
+        setIsFirstRequest(true)
+        nav("/")
+      }),
       {
         pending: 'Creating account...',
         success: 'Account created successfully!',

@@ -9,7 +9,7 @@ import { IRequest } from '../middleware/auth'
 export const getFriends = async (req: IRequest, res: Response) => {
   try {
     const user = await User.findById(req.user?._id).populate('friends', 'username')
-    res.status(200).json({ success:true, data :user?.friends || []})
+    res.status(200).json(user?.friends || [])
   } catch (error) {
     res.status(500).json({ success:false, message: 'Failed to fetch friends' })
   }
@@ -42,7 +42,7 @@ export const recommendations = async (req: IRequest, res: Response) => {
       { $limit: 5 }
     ]);
 
-    res.status(200).json({ success:true, data :recommendations});
+    res.status(200).json(recommendations);
   } catch (error) {
     res.status(500).json({ success:false, message: 'Failed to get recommendations' });
   }
@@ -56,7 +56,7 @@ export const getFriendReq = async (req: IRequest, res: Response) => {
       status: 'pending'
     }).populate('from', 'username');
     
-    res.status(200).json({ success:true, data :requests});
+    res.status(200).json(requests);
   } catch (error) {
     res.status(500).json({ success:false, message: 'Failed to fetch requests' });
   }
@@ -91,7 +91,7 @@ export const sendFriendReq = async (req: IRequest, res: Response) => {
     });
 
     await request.save();
-    res.status(201).json({ success:true, data :request});
+    res.status(201).json(request);
   } catch (error) {
     res.status(500).json({ success:false, message: 'Failed to send request' });
   }
@@ -125,8 +125,7 @@ export const dealWithReq = async (req: IRequest, res: Response) => {
       });
     }
 
-    const message = `Request ${status === "accepted" ? "accepted" : "rejected"}`
-    res.status(200).json({ success:true, data : request, message});
+    res.status(200).json(request);
   } catch (error) {
     console.log(error)
     res.status(500).json({ success:false, message: 'Failed to update request' });
@@ -147,7 +146,7 @@ export const removeFriend = async (req: IRequest, res: Response) => {
       $pull: { friends: userId }
     });
 
-    res.json({ success : true, message: 'Friend removed' });
+    res.json({ message: 'Friend removed' });
   } catch (error) {
     res.status(500).json({ success:false, message: 'Failed to remove friend' });
   }

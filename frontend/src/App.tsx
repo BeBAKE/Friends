@@ -4,7 +4,6 @@ import HomePage from './pages/HomePage';
 import Login from './pages/Auth/Login';
 import Signup from './pages/Auth/Signup';
 import NotFound from './pages/NotFound';
-import Navbar from './components/Layout/Navbar';
 import ProtectedRoute from './components/Layout/ProtectedRoute';
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -15,13 +14,14 @@ function App() {
   
     <Browser>
       <AuthProvider>
-        <Navbar />
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
 
+          {/* <Route path='/test' element={<HomePage/>}/> */}
+
           <Route path="/" element={<ProtectedRoute/>}>
-            <Route element={<HomePage />}/>
+            <Route element={<HomePage />} index/>
           </Route>
 
           <Route path="*" element={<NotFound />} />
@@ -50,4 +50,4 @@ function App() {
 
 }
 
-export default App;
+export default App

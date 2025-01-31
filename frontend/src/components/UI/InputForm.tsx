@@ -1,5 +1,5 @@
 import React, { ChangeEventHandler, HTMLInputTypeAttribute, useState } from "react"
-import { EyeClose, EyeOpen } from "./Logo/SeekPassword"
+import { EyeClose, EyeOpen } from "./Logo/EyeLogo"
 
 type InputFormType = {
   id : string,

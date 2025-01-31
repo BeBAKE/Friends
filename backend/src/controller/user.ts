@@ -55,28 +55,41 @@ const login = async (req: Request<{}, {}, UserCredentials>, res: Response<UserRe
   }
 }
 
-
-const searchUser = async (req: IRequest, res: Response) => {
+const searchUser =  async (req: IRequest, res: Response) => {
   try {
     const searchQuery = req.query.q as string;
     const userId = req.user?._id;
 
-    if (!searchQuery || searchQuery.length < 3) {
-      res.status(400).json({ error: 'Search query too short' })
-      return 
-    }
+    const currentUser = await User.findById(userId);
+    const userFriends = currentUser?.friends || [];
 
-    const users = await User.find({
-      username: { $regex: searchQuery, $options: 'i' },
-      _id: { $ne: userId },
-      friends: { $nin: [userId] }
-    }).limit(10);
+    const users = await User.aggregate([
+      {
+        $match: {
+          username: { $regex: searchQuery, $options: 'i' },
+          _id: { $ne: userId },
+          friends: { $nin: [userId] }
+        }
+      },
+      {
+        $project: {
+          username: 1,
+          mutualFriends: {
+            $size: {
+              $setIntersection: ["$friends", userFriends]
+            }
+          }
+        }
+      },
+      { $limit: 10 }
+    ]);
 
-    res.status(200).json(users);
+    res.json(users);
   } catch (error) {
     res.status(500).json({ error: 'Search failed' });
   }
 }
+
 
 export {
   signup,
