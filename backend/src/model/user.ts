@@ -1,6 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import bcrypt from 'bcryptjs';
-
 export interface Recommendation {
   _id: mongoose.Types.ObjectId;
   username: string;
@@ -9,15 +8,25 @@ export interface Recommendation {
 
 export interface IUser extends Document {
   email: string,
-  username: string;
-  password: string;
-  friends: mongoose.Types.ObjectId[];
-  interests?: string[];
+  username: string,
+  password: string,
+  friends: mongoose.Types.ObjectId[],
+  interests?: string[],
 }
 
 const userSchema: Schema = new Schema({
-  email: { type: String, required: true, unique: true},
-  username: { type: String, required: true, unique: true},
+  email: { 
+    type: String, 
+    required: true, 
+    unique: true,
+    min: [6,`Must be at least 6`],
+  },
+  username: { 
+    type: String, 
+    required: true, 
+    unique: true,
+    min: [3,`Must be at least 6`]
+  },
   password: { type: String, required: true },
   friends: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   interests: [String]
