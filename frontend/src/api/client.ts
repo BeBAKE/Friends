@@ -21,15 +21,14 @@ import axios from 'axios';
 
 // Create axios instance with base configuration
 const api = axios.create({
-  // baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5500/api/v1',
-  baseURL: 'http://localhost:5500/api/v1',
+  baseURL: import.meta.env.VITE_API_URL || '/api/v1',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Request interceptor for adding JWT token
+// Request interceptor for adding jwt token for every request
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
