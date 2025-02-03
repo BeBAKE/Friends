@@ -35,3 +35,5 @@ A modern social networking platform with user authentication, friend management,
 - JWT Authentication
 - REST API
 - CORS middleware
+
+## Added CICD pipeline
