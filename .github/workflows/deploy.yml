@@ -47,9 +47,6 @@ jobs:
             echo MONGO_URI="${{ secrets.MONGO_URI }}" > .env
             echo JWT_SECRET="${{ secrets.JWT_SECRET }}" >> .env
             echo DOCKERHUB_USERNAME="${{ secrets.DOCKERHUB_USERNAME }}" >> .env
-            # export MONGO_URI="$MONGO_URI"
-            # export JWT_SECRET="$JWT_SECRET"
-            # export DOCKERHUB_USERNAME="$DOCKERHUB_USERNAME"
 
             # Stopping existing containers
             sudo docker compose down
@@ -84,7 +81,7 @@ jobs:
 
       - name: Build React app with environment variable
         run: |
-          echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" > frontend/.env
+          echo VITE_API_URL="${{ secrets.VITE_API_URL }}" > ~/Friend/frontend/.env
           npm run build
         working-directory: ./frontend
         env:
