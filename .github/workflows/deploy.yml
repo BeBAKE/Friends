@@ -33,7 +33,7 @@ jobs:
           push: true
 
       - name: Deploy to EC2
-        uses: appleboy/ssh-action@v1
+        uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.EC2_IP }}
           key: ${{ secrets.SSH_KEY }}
