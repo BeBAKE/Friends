@@ -81,7 +81,7 @@ jobs:
 
       - name: Build React app with environment variable
         run: |
-          echo VITE_API_URL="${{ secrets.VITE_API_URL }}" > ~/Friends/frontend/.env
+          echo VITE_API_URL="${{ secrets.VITE_API_URL }}" > .env
           npm run build
         working-directory: ./frontend
         env:
