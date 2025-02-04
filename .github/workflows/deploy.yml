@@ -68,7 +68,7 @@ jobs:
     needs: build-and-deploy-backend
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -88,10 +88,12 @@ jobs:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
 
       - name: Publish to Cloudflare Pages
-        uses: cloudflare/pages-action@v1
+        uses: cloudflare/wrangler-action@v3
+        working-directory: ./frontend
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           projectName: friends-frontend
+          preCommands: ls -lart
           directory: dist
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
