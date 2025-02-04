@@ -92,7 +92,6 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: friends-frontend
-          preCommands: ls -lart
-          directory: dist
+          command: pages deploy dist --project-name=friends-frontend
+          workingDirectory: "frontend"
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
