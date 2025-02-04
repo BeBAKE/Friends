@@ -10,7 +10,7 @@ env:
   SSH_KEY: ${{ secrets.SSH_KEY }}
 
 jobs:
-  build-deploy:
+  build-and-deploy-backend:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -32,13 +32,6 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/friends-backend:latest
           push: true
 
-      - name: Build and push frontend
-        uses: docker/build-push-action@v4
-        with:
-          context: ./frontend
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/friends-frontend:latest
-          push: true
-
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1
         with:
@@ -48,7 +41,7 @@ jobs:
           script: |
             # Clone 
             git clone https://github.com/BeBAKE/Friends.git || true
-            cd Friends
+            cd ~/Friends
             git pull origin master
 
             # Stopping existing containers
@@ -56,10 +49,45 @@ jobs:
 
             # Pulling latest images
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/friends-backend:latest
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/friends-frontend:latest
 
-            MONGO_URI=${{ secrets.MONGO_URI }} 
-            JWT_SECRET=${{ secrets.JWT_SECRET }} 
-            VITE_API_URL=${{ secrets.VITE_API_URL }}
+            export MONGO_URI=${{ secrets.MONGO_URI }} 
+            export JWT_SECRET=${{ secrets.JWT_SECRET }} 
+            export DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
 
             docker-compose up -d
+
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    needs: build-and-deploy-backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./frontend
+
+      - name: Build React app with environment variable
+        run: |
+          echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" > frontend/.env
+          npm run build
+        working-directory: ./frontend
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: Friends
+          directory: frontend/dist
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}

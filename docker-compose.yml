@@ -1,35 +1,44 @@
 services:
   backend:
-    build: 
-      context: ./backend
+    image: ${DOCKERHUB_USERNAME}/friends-backend:latest
+    # build: ./backend
     container_name: "friends_backend"
+    restart: always
     networks:
       - friends_intranet
     environment:
       - MONGO_URI=${MONGO_URI}
       - JWT_SECRET=${JWT_SECRET}
+    expose:
+      - "5500"
 
-  frontend:
-    build: 
-      context: ./frontend
-    container_name: "friends_frontend"
-    environment:
-      - VITE_API_URL=${VITE_API_URL}
-    networks:
-      - friends_intranet
-    depends_on:
-      - backend
+  # frontend:
+  #   # image: ${DOCKERHUB_USERNAME}/friends-frontend:latest
+  #   build: ./frontend
+  #   container_name: "friends_frontend"
+  #   environment:
+  #     - VITE_API_URL="http://backend:5500/api/v1"
+  #   networks:
+  #     - friends_intranet
+  #   depends_on:
+  #     - backend
+  #   ports:
+  #     - "80:80" 
     
+    
+
   reverse_proxy:
     image: nginx:alpine
+    container_name: reverse_proxy
+    restart: always
     networks:
       - friends_intranet
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
-    port:
+    ports:
       - "80:80"
     depends_on:
-      - frontend
+      - backend
 
 networks:
   friends_intranet:
