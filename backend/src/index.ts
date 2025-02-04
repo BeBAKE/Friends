@@ -6,7 +6,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 import indexRouter from './routes/index'
-import { disconnect } from "mongoose";
+import { disconnect } from "mongoose"
 
 
 const app = express();
